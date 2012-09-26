@@ -27,7 +27,7 @@ object Crypto {
    * Signs the given String with HMAC-SHA1 using the application’s secret key.
    */
   def sign(message: String): String = {
-    secret.map(secret => sign(message, secret.getBytes)).getOrElse {
+    secret.map(secret => sign(message, secret.getBytes("utf-8"))).getOrElse {
       throw new PlayException("Configuration error", "Missing application.secret")
     }
   }
@@ -50,11 +50,11 @@ object Crypto {
    * @return An hexadecimal encrypted string
    */
   def encryptAES(value: String, privateKey: String): String = {
-    val raw = privateKey.getBytes()
+    val raw = privateKey.getBytes("utf-8")
     val skeySpec = new SecretKeySpec(raw, "AES")
     val cipher = Cipher.getInstance("AES")
     cipher.init(Cipher.ENCRYPT_MODE, skeySpec)
-    Codecs.toHexString(cipher.doFinal(value.getBytes()))
+    Codecs.toHexString(cipher.doFinal(value.getBytes("utf-8")))
   }
 
   /**
@@ -75,7 +75,7 @@ object Crypto {
    * @return The decrypted String
    */
   def decryptAES(value: String, privateKey: String): String = {
-    val raw = privateKey.getBytes();
+    val raw = privateKey.getBytes("utf-8");
     val skeySpec = new SecretKeySpec(raw, "AES");
     val cipher = Cipher.getInstance("AES");
     cipher.init(Cipher.DECRYPT_MODE, skeySpec);
